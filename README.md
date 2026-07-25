@@ -51,15 +51,11 @@ sudo nmap -sS -sV -O -p- -T4 <ip-host>
 #Сканирование с использованием NSE-скриптов для поиска уязвимостей
 sudo nmap -sV --script vuln <ip-host>
 ```
-результат сканирования
-(скрин 1)
-(скрин 2)
-(скрин 3)
-выводы по скану:
-При сканировании Metasploitable 2 было обнаружено 30 открытых TCP-портов. Основные службы:
+
 <details>
   <summary>Нажмите, чтобы увидеть детали по sudo nmap -sS -sV -p- -T4</summary>
-</details>
+  
+  ```bash
 Порт	Служба	Версия
 21	FTP	vsftpd 2.3.4
 22	SSH	OpenSSH 4.7p1
@@ -73,12 +69,15 @@ sudo nmap -sV --script vuln <ip-host>
 5900	VNC	Protocol 3.3
 6667	IRC	UnrealIRCd 3.2.8.1
 8180	HTTP	Apache Tomcat 5.5
-<details>
+```
+</details>
+
 
 <details>
   <summary>Нажмите, чтобы увидеть детали по sudo nmap -sS -sV -O -p- -T4</summary>
-</details>
-Starting Nmap 7.99 ( https://nmap.org ) at 2026-07-25 14:09 +0500
+
+```bash
+  Starting Nmap 7.99 ( https://nmap.org ) at 2026-07-25 14:09 +0500
 Nmap scan report for 192.168.0.56
 Host is up (0.00013s latency).                                                          
 Not shown: 65505 closed tcp ports (reset)                                               
@@ -123,10 +122,11 @@ Service Info: Hosts:  metasploitable.localdomain, irc.Metasploitable.LAN; OSs: U
 
 OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
 Nmap done: 1 IP address (1 host up) scanned in 128.97 seconds
+```
+</details>
+
 
 <details>
-
-
   <summary>Нажмите, чтобы увидеть детали по sudo nmap -sV --script vuln</summary>
 
 ```bash
@@ -536,11 +536,13 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 327.12 seconds
 ```
 </details>
+
 Ответьте на следующие вопросы:
 
 - Какие сетевые службы в ней разрешены?
 
 Порт	Протокол	Служба	Версия
+```bash
 21/tcp    open  ftp         vsftpd 2.3.4                                                
 22/tcp    open  ssh         OpenSSH 4.7p1 Debian 8ubuntu1 (protocol 2.0)                
 23/tcp    open  telnet      Linux telnetd                                               
@@ -570,29 +572,31 @@ Nmap done: 1 IP address (1 host up) scanned in 327.12 seconds
 47767/tcp open  nlockmgr    1-4 (RPC #100021)
 54348/tcp open  status      1 (RPC #100024)
 56607/tcp open  java-rmi    GNU Classpath grmiregistry
+```
 
 
 - Какие уязвимости были вами обнаружены? (список со ссылками: достаточно трёх уязвимостей)
 
-**1.vsftpd 2.3.4 — Backdoor Command Execution (CVE-2011-2523)**
-   Версия vsftpd 2.3.4 содержит вредоносную закладку (бэкдор), внедрённую в официальный бинарный файл в 2011 году. Закладка активируется при отправке имени пользователя, содержащего последовательность :. После успешной аутентификации бэкдор открывает root-командную оболочку на TCP-порту 6200
+1. **vsftpd 2.3.4 — Backdoor Command Execution (CVE-2011-2523)**
+   - Версия vsftpd 2.3.4 содержит вредоносную закладку (бэкдор), внедрённую в официальный бинарный файл в 2011 году. Закладка активируется при отправке имени пользователя, содержащего последовательность `:)`. После успешной аутентификации бэкдор открывает root-командную оболочку на TCP-порту 6200.
+   - Способ эксплуатации: удалённый злоумышленник может выполнить произвольные команды с правами root.
+   - Ссылки:
+     - [Exploit-DB](https://www.exploit-db.com/exploits/17491)
+     - CVE: CVE-2011-2523
 
-   Способ эксплуатации: Удалённый злоумышленник может выполнить произвольные команды с правами root.
-- https://www.exploit-db.com/exploits/17491
-- CVE: CVE-2011-2523
-**2.Samba — username map script Command Execution**
-   Уязвимость внедрения команд в Samba версиях 3.0.0 – 3.0.25rc3. Проблема существует в функции SamrChangePassword(), которая не выполняет должную санитацию пользовательского ввода, позволяя злоумышленнику внедрять shell-метасимволы в поле имени пользователя при SMB-аутентификации. Уязвимость активируется при использовании нестандартной опции конфигурации "username map script"
+2. **Samba — username map script Command Execution (CVE-2007-2447)**
+   - Уязвимость внедрения команд в Samba версиях 3.0.0 – 3.0.25rc3. Проблема существует в функции `SamrChangePassword()`, которая не выполняет должную санитацию пользовательского ввода, позволяя злоумышленнику внедрять shell-метасимволы в поле имени пользователя при SMB-аутентификации.
+   - Способ эксплуатации: удалённый злоумышленник может выполнить произвольные команды на сервере.
+   - Ссылки:
+     - [Exploit-DB](https://www.exploit-db.com/exploits/16320)
+     - CVE: CVE-2007-2447
 
-   Способ эксплуатации: Удалённый злоумышленник может выполнить произвольные команды на сервере.
-- https://www.exploit-db.com/exploits/16320
-- CVE: CVE-2007-2447
-
-**3.UnrealIRCd 3.2.8.1 — Backdoor Command Execution**
-   Версия UnrealIRCd 3.2.8.1, распространявшаяся на некоторых зеркалах с ноября 2009 по июнь 2010 года, содержит внешнее вредоносное изменение (троян) в макросе DEBUG3_DOLOG_SYSTEM. Скомпрометированный бинарный файл выполняет произвольные команды, переданные с префиксом AB; на IRC-порт
-
-   Способ эксплуатации: Удалённый злоумышленник может выполнить произвольный код в целевой системе.
-- https://www.exploit-db.com/exploits/16922
-- CVE: CVE-2010-2075
+3. **UnrealIRCd 3.2.8.1 — Backdoor Command Execution (CVE-2010-2075)**
+   - Версия UnrealIRCd 3.2.8.1, распространявшаяся на некоторых зеркалах с ноября 2009 по июнь 2010 года, содержит внешнее вредоносное изменение (троян) в макросе `DEBUG3_DOLOG_SYSTEM`. Скомпрометированный бинарный файл выполняет произвольные команды, переданные с префиксом `AB;` на IRC-порт.
+   - Способ эксплуатации: удалённый злоумышленник может выполнить произвольный код в целевой системе.
+   - Ссылки:
+     - [Exploit-DB](https://www.exploit-db.com/exploits/16922)
+     - CVE: CVE-2010-2075
 
 **Помимо трёх перечисленных, в Metasploitable 2 также присутствуют:**
 
