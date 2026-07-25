@@ -60,6 +60,7 @@ sudo nmap -sV --script vuln <ip-host>
 >![скриншот_3](https://github.com/MindMaze74/devsec/blob/main/img/3.png)
 >![скриншот_4](https://github.com/MindMaze74/devsec/blob/main/img/4.png)
 </details>
+
 **выводы по скану:**
 >При сканировании Metasploitable 2 было обнаружено 30 открытых TCP-портов. Основные службы:
 
