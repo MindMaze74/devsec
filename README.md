@@ -549,8 +549,9 @@ Nmap done: 1 IP address (1 host up) scanned in 327.12 seconds
 
 - Какие сетевые службы в ней разрешены?
 
-Порт	Протокол	Служба	Версия
+
 ```bash
+Порт	Протокол	Служба	Версия
 21/tcp    open  ftp         vsftpd 2.3.4                                                
 22/tcp    open  ssh         OpenSSH 4.7p1 Debian 8ubuntu1 (protocol 2.0)                
 23/tcp    open  telnet      Linux telnetd                                               
@@ -622,9 +623,56 @@ Nmap done: 1 IP address (1 host up) scanned in 327.12 seconds
 
 Запишите сеансы сканирования в Wireshark.
 
+<details>
+  <summary>Нажмите, чтобы увидеть детали по SYN-сканированию(-sS)</summary>
+  
+  ```bash
+sudo nmap -sS -p 80 <ip_host>
+```
+>![скриншот_5](https://github.com/MindMaze74/devsec/blob/main/img/5.png)
+</details>
+
+<details>
+  <summary>Нажмите, чтобы увидеть детали по FIN-сканированию (-sF)</summary>
+  
+  ```bash
+sudo nmap -sF -p 80 <ip_host>
+```
+>![скриншот_6](https://github.com/MindMaze74/devsec/blob/main/img/6.png)
+</details>
+
+<details>
+  <summary>Нажмите, чтобы увидеть детали по Xmas-сканирование (-sX)</summary>
+  
+  ```bash
+sudo nmap -sX -p 80 <ip_host>
+```
+>![скриншот_7](https://github.com/MindMaze74/devsec/blob/main/img/7.png)
+</details>
+
+<details>
+  <summary>Нажмите, чтобы увидеть детали по UDP-сканирование (-sU)</summary>
+  
+  ```bash
+sudo nmap -sU -p 53,123,161 <ip_host>
+```
+>![скриншот_8](https://github.com/MindMaze74/devsec/blob/main/img/8.png)
+</details>
+
 Ответьте на следующие вопросы:
 
 - Чем отличаются эти режимы сканирования с точки зрения сетевого трафика?
+
+  - SYN-сканирование отправляется обычный SYN-пакет, идёт неполное рукопожатие.
+  - FIN-сканирование вместо SYN отправляется только FIN-флаг.
+  - Xmas-сканирование одновременно выставляются FIN, PSH и URG.
+  - UDP-сканирование используются UDP-датаграммы вместо TCP.
+В остальном трафик отличается набором флагов и тем, какие ответы генерирует сервер.
+
 - Как отвечает сервер?
+  - SYN: открытый порт SYN+ACK, закрытый RST.
+  - FIN и Xmas: открытый порт игнорирует пакет, закрытый отвечает RST.
+  - UDP: закрытый порт возвращает ICMP «Port Unreachable», открытый – либо UDP-ответ, либо тишина.
+
 
 *Приведите ответ в свободной форме.*
